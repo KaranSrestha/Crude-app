@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Application</title>
+    <style>
+        *{
+            margin: 0;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+        body{
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+        .container{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        h2{
+            background-color: rgb(68, 49, 155);
+            padding: 20px 30px;
+            color: white;
+            width: 100%;
+            text-align: center;
+        }
+        .add{
+            margin-top: 20px;
+            display: flex;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        .add input{
+            height: 30px;
+            padding: 15px;
+            font-size: 1.2rem;
+        }
+        .add button{
+            padding: 0 15px;
+            font-size: 1.2rem;
+            background-color: rgb(59, 95, 238);
+            border: none;
+            outline: none;
+            cursor: pointer;
+            color: white;
+            border-radius: 4px;
+        }
+        .add button:hover{
+            background-color: rgb(43, 76, 206);
+        }
+        h3{
+            border-top: 1px solid black;
+            text-align: center;
+            width: 100%;
+            padding-top: 20px;
+            text-decoration: underline;
+            margin-bottom: 15px;
+        }
+        .record{
+            display: flex;
+            gap: 30px;
+            border: 1px solid black;
+            padding: 5px;
+        }
+        .record .edit{
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+        .e_btn, .s_btn, .d_btn{
+            min-width: 60px;
+            max-width: 60px;
+            padding: 10px 0;
+            cursor: pointer;
+            color: white;
+            border: none;
+            outline: none;
+        }
+        .e_btn{
+            background-color: rgb(59, 95, 238);
+        }
+        .s_btn{
+            background-color: rgb(40, 181, 32);
+        }
+        .d_btn{
+            background-color: red;
+        }
+        input:read-only{
+            border-color: transparent;
+            outline: none;
+        }
+        .editField{
+            padding: 5px 2px;
+        }
+        .heading{
+            font-size: 0.8rem;
+            align-items: center;
+            gap: 32px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+    <h2>CRUD Application</h2>
+    <form action="/add" method="post" class="add">
+        <input type="text" name="name" placeholder="Full Name" required>
+        <input type="number" name="age" placeholder="Age" required>
+        <button type="submit">Add</button>
+    </form>
+
+    <% if (records.length > 0) { %>
+        <h3>Records</h3>
+        <ul>
+            <li class="record heading">
+                <span>Sl.no</span>
+                <input type="text" readonly value="Name">
+                <input type="text" readonly value="Age">
+            </li>
+            <% let i = 1; %>
+            <% records.forEach(function(record) { %>
+                <li class="record">
+                    <form action="/edit/<%= record._id %>" method="post" class="edit">
+                        <span style="margin-right: 20px; margin-left: 5px;"><%= i %></span>
+                        <input class="editField" type="text" name="name" value="<%= record.name %>" readonly>
+                        <input class="editField" type="number" name="age" value="<%= record.age %>" readonly>
+                        <button type="button" onclick="handleClick(this)" class="e_btn">Edit</button>
+                        <button type="submit" style="display: none;" class="s_btn">Save</button>
+                    </form>
+                    <form action="/delete/<%= record._id %>" method="post" style="display: inline;">
+                        <button type="submit" class="d_btn">Delete</button>
+                    </form>
+                </li>
+                <% i++; %>
+            <% }); %>
+        </ul>
+    <% } %>
+</div>
+
+    <script>
+        function handleClick(button) {
+            const form = button.closest('form');
+            const inputs = form.querySelectorAll('input');
+            const saveButton = form.querySelector('button[type="submit"]'); 
+            const editButton = form.querySelector('button[type="button"]'); 
+
+           
+            inputs.forEach(input => {
+                if (input.hasAttribute('readonly')) {
+                    input.removeAttribute('readonly');
+                } else {
+                    input.setAttribute('readonly', true);
+                }
+            });
+
+            
+            if (saveButton.style.display === 'none') {
+                saveButton.style.display = 'inline';
+                editButton.style.display = 'none';
+            } else {
+                saveButton.style.display = 'none';
+                editButton.style.display = 'inline';
+            }
+        }
+    </script>
+</body>
+</html>
